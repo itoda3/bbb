@@ -263,13 +263,13 @@ en:
   footer:
     legal: Legal
     privpolicy: Privacy Policy
-    powered_by: Powered by %{href}.
+    powered_by: Developed by %{href}.
   forgot_password:
     subtitle: Forgot Password
     email: Email
     submit: Submit
   go_back: Go back
-  greenlight: Greenlight
+  greenlight: BBB-Tarnus
   header:
     all_recordings: All Recordings
     dropdown:
