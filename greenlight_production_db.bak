@@ -1,0 +1,1017 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.5.22
+-- Dumped by pg_dump version 9.5.21
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.ar_internal_metadata (
+    key character varying NOT NULL,
+    value character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.ar_internal_metadata OWNER TO postgres;
+
+--
+-- Name: features; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.features (
+    id bigint NOT NULL,
+    setting_id integer,
+    name character varying NOT NULL,
+    value character varying,
+    enabled boolean DEFAULT false,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.features OWNER TO postgres;
+
+--
+-- Name: features_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.features_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.features_id_seq OWNER TO postgres;
+
+--
+-- Name: features_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.features_id_seq OWNED BY public.features.id;
+
+
+--
+-- Name: invitations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.invitations (
+    id bigint NOT NULL,
+    email character varying NOT NULL,
+    provider character varying NOT NULL,
+    invite_token character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.invitations OWNER TO postgres;
+
+--
+-- Name: invitations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.invitations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.invitations_id_seq OWNER TO postgres;
+
+--
+-- Name: invitations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.invitations_id_seq OWNED BY public.invitations.id;
+
+
+--
+-- Name: role_permissions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.role_permissions (
+    id bigint NOT NULL,
+    name character varying,
+    value character varying DEFAULT ''::character varying,
+    enabled boolean DEFAULT false,
+    role_id integer,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.role_permissions OWNER TO postgres;
+
+--
+-- Name: role_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.role_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.role_permissions_id_seq OWNER TO postgres;
+
+--
+-- Name: role_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.role_permissions_id_seq OWNED BY public.role_permissions.id;
+
+
+--
+-- Name: roles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.roles (
+    id bigint NOT NULL,
+    name character varying,
+    priority integer DEFAULT 9999,
+    can_create_rooms boolean DEFAULT false,
+    send_promoted_email boolean DEFAULT false,
+    send_demoted_email boolean DEFAULT false,
+    can_edit_site_settings boolean DEFAULT false,
+    can_edit_roles boolean DEFAULT false,
+    can_manage_users boolean DEFAULT false,
+    colour character varying,
+    provider character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.roles OWNER TO postgres;
+
+--
+-- Name: roles_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.roles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.roles_id_seq OWNER TO postgres;
+
+--
+-- Name: roles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.roles_id_seq OWNED BY public.roles.id;
+
+
+--
+-- Name: rooms; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.rooms (
+    id bigint NOT NULL,
+    user_id integer,
+    name character varying,
+    uid character varying,
+    bbb_id character varying,
+    sessions integer DEFAULT 0,
+    last_session timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    room_settings character varying DEFAULT '{ }'::character varying,
+    moderator_pw character varying,
+    attendee_pw character varying,
+    access_code character varying,
+    deleted boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.rooms OWNER TO postgres;
+
+--
+-- Name: rooms_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.rooms_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.rooms_id_seq OWNER TO postgres;
+
+--
+-- Name: rooms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.rooms_id_seq OWNED BY public.rooms.id;
+
+
+--
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.schema_migrations (
+    version character varying NOT NULL
+);
+
+
+ALTER TABLE public.schema_migrations OWNER TO postgres;
+
+--
+-- Name: settings; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.settings (
+    id bigint NOT NULL,
+    provider character varying NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.settings OWNER TO postgres;
+
+--
+-- Name: settings_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.settings_id_seq OWNER TO postgres;
+
+--
+-- Name: settings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.settings_id_seq OWNED BY public.settings.id;
+
+
+--
+-- Name: shared_accesses; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.shared_accesses (
+    id bigint NOT NULL,
+    room_id integer,
+    user_id integer,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.shared_accesses OWNER TO postgres;
+
+--
+-- Name: shared_accesses_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.shared_accesses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.shared_accesses_id_seq OWNER TO postgres;
+
+--
+-- Name: shared_accesses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.shared_accesses_id_seq OWNED BY public.shared_accesses.id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    id bigint NOT NULL,
+    room_id integer,
+    provider character varying,
+    uid character varying,
+    name character varying,
+    username character varying,
+    email character varying,
+    social_uid character varying,
+    image character varying,
+    password_digest character varying,
+    accepted_terms boolean DEFAULT false,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    email_verified boolean DEFAULT false,
+    language character varying DEFAULT 'default'::character varying,
+    reset_digest character varying,
+    reset_sent_at timestamp without time zone,
+    activation_digest character varying,
+    activated_at timestamp without time zone,
+    deleted boolean DEFAULT false NOT NULL,
+    role_id integer
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- Name: users_roles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users_roles (
+    user_id integer,
+    role_id integer
+);
+
+
+ALTER TABLE public.users_roles OWNER TO postgres;
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.features ALTER COLUMN id SET DEFAULT nextval('public.features_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.invitations ALTER COLUMN id SET DEFAULT nextval('public.invitations_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.role_permissions ALTER COLUMN id SET DEFAULT nextval('public.role_permissions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rooms ALTER COLUMN id SET DEFAULT nextval('public.rooms_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.settings ALTER COLUMN id SET DEFAULT nextval('public.settings_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.shared_accesses ALTER COLUMN id SET DEFAULT nextval('public.shared_accesses_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Data for Name: ar_internal_metadata; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.ar_internal_metadata (key, value, created_at, updated_at) FROM stdin;
+environment	production	2020-06-04 09:17:43.771821	2020-06-04 09:17:43.771821
+\.
+
+
+--
+-- Data for Name: features; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.features (id, setting_id, name, value, enabled, created_at, updated_at) FROM stdin;
+2	1	Legal URL	\N	f	2020-06-04 09:38:35.706007	2020-06-04 09:38:35.706007
+3	1	Privacy Policy URL	\N	f	2020-06-04 09:38:35.710142	2020-06-04 09:38:35.710142
+4	1	Primary Color	\N	f	2020-06-04 09:38:36.449664	2020-06-04 09:38:36.449664
+5	1	Primary Color Lighten	\N	f	2020-06-04 09:38:36.454683	2020-06-04 09:38:36.454683
+6	1	Primary Color Darken	\N	f	2020-06-04 09:38:36.459466	2020-06-04 09:38:36.459466
+8	1	Room Configuration Allow Any Start	\N	f	2020-06-04 09:39:21.749172	2020-06-04 09:39:21.749172
+9	1	Shared Access	\N	f	2020-06-04 09:39:22.320801	2020-06-04 09:39:22.320801
+12	1	Room Configuration Require Moderator	\N	f	2020-06-04 09:39:22.508128	2020-06-04 09:39:22.508128
+14	1	Default Recording Visibility	\N	f	2020-06-04 09:39:44.835285	2020-06-04 09:39:44.835285
+15	1	Room Authentication	\N	f	2020-06-04 15:27:48.891213	2020-06-04 15:27:48.891213
+13	1	Room Configuration All Join Moderator	disabled	t	2020-06-04 09:39:22.512821	2020-06-04 15:29:05.624813
+1	1	Branding Image	https://raw.githubusercontent.com/itoda3/bbb/master/app/assets/images/logo_with_text.png	t	2020-06-04 09:38:35.663816	2020-06-08 01:45:09.577746
+7	1	Registration Method	0	t	2020-06-04 09:38:52.638686	2020-06-22 02:58:45.002134
+10	1	Room Limit	5	t	2020-06-04 09:39:22.472997	2020-07-08 04:15:21.702169
+11	1	Room Configuration Mute On Join	optional	t	2020-06-04 09:39:22.503723	2020-07-08 04:16:24.672368
+\.
+
+
+--
+-- Name: features_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.features_id_seq', 15, true);
+
+
+--
+-- Data for Name: invitations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.invitations (id, email, provider, invite_token, created_at, updated_at) FROM stdin;
+1	itodwiadha90@tarunanusantara.sch.id	greenlight	a1pz18AhD24Q4PijNF6B9kki	2020-06-22 02:51:35.284987	2020-06-22 02:51:35.284987
+\.
+
+
+--
+-- Name: invitations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.invitations_id_seq', 1, true);
+
+
+--
+-- Data for Name: role_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.role_permissions (id, name, value, enabled, role_id, created_at, updated_at) FROM stdin;
+1	can_create_rooms	true	t	1	2020-06-04 09:39:20.993091	2020-06-04 09:39:20.99506
+2	can_create_rooms	true	t	2	2020-06-04 09:39:21.000665	2020-06-04 09:39:21.002187
+3	send_promoted_email	true	t	2	2020-06-04 09:39:21.005186	2020-06-04 09:39:21.006688
+4	send_demoted_email	true	t	2	2020-06-04 09:39:21.00958	2020-06-04 09:39:21.011134
+5	can_edit_site_settings	true	t	2	2020-06-04 09:39:21.01402	2020-06-04 09:39:21.015527
+6	can_edit_roles	true	t	2	2020-06-04 09:39:21.018501	2020-06-04 09:39:21.020001
+7	can_manage_users	true	t	2	2020-06-04 09:39:21.022854	2020-06-04 09:39:21.024384
+8	can_manage_rooms_recordings	true	t	2	2020-06-04 09:39:21.02733	2020-06-04 09:39:21.028842
+9	can_create_rooms	true	t	5	2020-06-04 09:39:21.037874	2020-06-04 09:39:21.039537
+10	send_promoted_email	true	t	5	2020-06-04 09:39:21.04255	2020-06-04 09:39:21.044062
+11	send_demoted_email	true	t	5	2020-06-04 09:39:21.047053	2020-06-04 09:39:21.048606
+12	can_edit_site_settings	true	t	5	2020-06-04 09:39:21.051604	2020-06-04 09:39:21.053221
+13	can_edit_roles	true	t	5	2020-06-04 09:39:21.056261	2020-06-04 09:39:21.057809
+14	can_manage_users	true	t	5	2020-06-04 09:39:21.060809	2020-06-04 09:39:21.06245
+15	can_manage_rooms_recordings	true	t	5	2020-06-04 09:39:21.07323	2020-06-04 09:39:21.07476
+16	can_appear_in_share_list		f	1	2020-06-04 09:39:22.446663	2020-06-04 09:39:22.446663
+17	can_appear_in_share_list		f	2	2020-06-04 09:39:22.451108	2020-06-04 09:39:22.451108
+18	can_appear_in_share_list		f	3	2020-06-04 09:39:22.455014	2020-06-04 09:39:22.455014
+19	can_appear_in_share_list		f	4	2020-06-04 09:39:22.45878	2020-06-04 09:39:22.45878
+20	can_appear_in_share_list		f	5	2020-06-04 09:39:22.462459	2020-06-04 09:39:22.462459
+21	can_manage_users		f	1	2020-06-04 09:39:22.554091	2020-06-04 09:39:22.554091
+22	can_manage_rooms_recordings		f	1	2020-06-04 09:39:22.557872	2020-06-04 09:39:22.557872
+23	can_edit_site_settings		f	1	2020-06-04 09:39:22.561737	2020-06-04 09:39:22.561737
+24	can_edit_roles		f	1	2020-06-04 09:39:22.565701	2020-06-04 09:39:22.565701
+25	send_promoted_email		f	1	2020-06-04 15:29:10.915115	2020-06-04 15:29:10.915115
+26	send_demoted_email		f	1	2020-06-04 15:29:10.920687	2020-06-04 15:29:10.920687
+27	can_create_rooms		f	3	2020-06-05 00:06:05.184096	2020-06-05 00:06:05.184096
+28	can_create_rooms		f	4	2020-06-06 04:28:54.969383	2020-06-06 04:28:54.969383
+\.
+
+
+--
+-- Name: role_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.role_permissions_id_seq', 28, true);
+
+
+--
+-- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.roles (id, name, priority, can_create_rooms, send_promoted_email, send_demoted_email, can_edit_site_settings, can_edit_roles, can_manage_users, colour, provider, created_at, updated_at) FROM stdin;
+1	user	1	f	f	f	f	f	f	#868e96	greenlight	2020-06-04 09:39:20.97462	2020-06-04 09:39:20.97462
+2	admin	0	f	f	f	f	f	f	#f1c40f	greenlight	2020-06-04 09:39:20.997045	2020-06-04 09:39:20.997045
+3	pending	-1	f	f	f	f	f	f	#17a2b8	greenlight	2020-06-04 09:39:21.030638	2020-06-04 09:39:21.030638
+4	denied	-2	f	f	f	f	f	f	#343a40	greenlight	2020-06-04 09:39:21.032505	2020-06-04 09:39:21.032505
+5	super_admin	-3	f	f	f	f	f	f	#cd201f	greenlight	2020-06-04 09:39:21.034416	2020-06-04 09:39:21.034416
+\.
+
+
+--
+-- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.roles_id_seq', 5, true);
+
+
+--
+-- Data for Name: rooms; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.rooms (id, user_id, name, uid, bbb_id, sessions, last_session, created_at, updated_at, room_settings, moderator_pw, attendee_pw, access_code, deleted) FROM stdin;
+3	2	test	inf-rld-vni	2umdksb1c6riukqvgm03xkq2orpyp1zjde3ocgd5	1	2020-06-08 04:35:43.750815	2020-06-08 04:35:04.981948	2020-06-10 07:23:48.565607	{"muteOnStart":true,"requireModeratorApproval":false,"anyoneCanStart":false,"joinModerator":false}	IkDDsReLPALD	soDUrsXCzeAT		t
+6	5	Home Room	kun-kps-rfg	blquevm2awrxzp3zewfjqd0oleioetf5xrvinhba	0	\N	2020-06-19 06:25:07.701348	2020-06-19 06:25:07.701348	{ }	PBulzNIhbAvE	ObWIgqfyUujC	\N	f
+8	6	Home Room	ito-xek-kp0	ymgawnqr5egharaat5hcslsxd1pqlwb7fc3syv1y	0	\N	2020-06-22 04:39:24.511298	2020-06-22 04:39:24.511298	{ }	hZYvaEBNcBVI	AlIwhdiJrwZc	\N	f
+9	9	Home Room	ari-vug-xqk	jtbbq2chkefub1jwpivhel9yo7hydoh5wpmsjh2s	0	\N	2020-07-03 06:31:11.39467	2020-07-03 06:31:11.39467	{ }	cqkBMbiZtqSC	VKclhkrBwKHH	\N	f
+18	11	endah class	end-e38-uob	2ecjvxyknqlydjfldmyr7thvag8frx2ziz93x1y0	0	\N	2020-07-03 06:49:31.984295	2020-07-03 06:49:31.984295	{"muteOnStart":true,"requireModeratorApproval":false,"anyoneCanStart":false,"joinModerator":false}	PptQwNxuXBPx	aEGiVMEAkWFP		f
+13	10	Kela x1	lev-1jc-qsc	srjfnby30obvwmpx6hplsqkzy5vm5tq5i4edq9di	1	2020-07-03 06:42:39.38305	2020-07-03 06:42:26.048542	2020-07-03 06:44:22.907817	{"muteOnStart":false,"requireModeratorApproval":false,"anyoneCanStart":false,"joinModerator":false}	UpQwjVMXLkmX	QYPBKzkENJAv	\N	t
+15	18	Home Room	m-g-rp9-vtw	udz4ltse8ltx3hkgzolxgbx06lodjl55iawmruxu	1	2020-07-03 06:46:51.103718	2020-07-03 06:46:08.694649	2020-07-03 06:46:51.10567	{ }	iMgoKywQBhPP	yjkQSBFWAVGJ	\N	f
+11	14	Home Room	muh-ria-akj	efmood2ersas0icinyr9ji4scbawwwtxvtnfqy5z	1	2020-07-03 06:47:57.478567	2020-07-03 06:39:56.868241	2020-07-03 06:47:57.480428	{ }	WkCePCNnNBkS	JRtreAyzmoZM	\N	f
+12	10	Home Room	lev-qgs-sze	ofplkvpqawsbrrxci7sufhq29tssswxizfap0zdw	2	2020-07-03 06:49:18.790394	2020-07-03 06:40:46.454843	2020-07-03 06:49:18.792155	{ }	oEAJGbKHhgtG	pqTrTZWwPmIy	\N	f
+10	8	Home Room	ana-zic-xch	djtieyaexedo3wt9uwk7umfc1hdua9jtnhfarcij	1	2020-07-03 06:49:33.803407	2020-07-03 06:33:17.55874	2020-07-03 06:49:33.80495	{ }	hnncPaOnNFDF	BhgsNuIvVDSO	\N	f
+19	19	Home Room	ste-gzr-xxs	jq6uec2ecjuisz74xrf2w6r04tro6kms1l2lctou	0	\N	2020-07-03 06:50:15.751495	2020-07-03 06:50:15.751495	{ }	aXBYZdiONtfL	fGbkQYQQHHou	\N	f
+17	20	Home Room	yul-il3-pg2	htrxcgbycqvirfucpdgewrxfnu2azmcjdqzez6nl	1	2020-07-03 06:50:59.013767	2020-07-03 06:49:31.281971	2020-07-03 06:50:59.015804	{ }	gFXXSGZFyCDs	nNgCCHhXIlio	\N	f
+20	8	Biologi B5	ana-mnb-rzs	qcbqwwdk9o8kfgytvqxulparyuwhhy5ib6lxspgl	0	\N	2020-07-03 06:51:10.065364	2020-07-03 06:51:10.065364	{"muteOnStart":true,"requireModeratorApproval":false,"anyoneCanStart":false,"joinModerator":false}	oWpGDQamgxHy	enbVQDOIhcrb		f
+16	11	Home Room	end-2rz-jgt	qtrksj8b7qdlracsowozxcke9dprwuyetv2uwnwb	2	2020-07-03 06:52:41.282865	2020-07-03 06:48:26.509006	2020-07-03 06:52:41.286424	{"muteOnStart":true,"requireModeratorApproval":false,"anyoneCanStart":false,"joinModerator":false}	sOGSlTvoWYDB	YuBKHHbiITWR		f
+21	20	X1	yul-9ef-foa	jahapz3oc5svawy3c5kzd8dehwm5kd95z2ztv6ft	1	2020-07-03 06:55:45.575999	2020-07-03 06:51:43.971313	2020-07-03 06:55:45.578966	{"muteOnStart":true,"requireModeratorApproval":false,"anyoneCanStart":false,"joinModerator":false}	oObBxGHqNLvC	HOxiWsTwDmwu		f
+22	21	Home Room	okt-iow-68k	owcwyvb8rggd0ujolnpb1gsv8pabfrw51fed4oin	1	2020-07-03 06:55:57.699617	2020-07-03 06:54:48.035127	2020-07-03 06:55:57.701408	{ }	YJUcMYJWzKBU	xUCNiaVfEsVF	\N	f
+23	19	Fisika F2	ste-h9n-8wx	vdrqsqsrsxewcmuidfcm3xxnhggsqdj9mi5mwdu4	1	2020-07-03 06:58:50.014326	2020-07-03 06:57:49.596458	2020-07-03 06:58:50.016639	{"muteOnStart":true,"requireModeratorApproval":false,"anyoneCanStart":false,"joinModerator":false}	nvhuUMOTAORb	QDNAhfchFXIH		f
+25	26	Home Room	asr-f1k-xf9	n3revvjwqmrbbggaqxeneyamqa7zibvibk152i86	1	2020-07-03 07:22:27.071687	2020-07-03 07:21:29.406629	2020-07-03 07:22:27.073853	{ }	nGydQVRzoBKm	VDlwZALvsQNF	\N	f
+14	16	Home Room	yet-9en-zkh	u4ucnmr7kyt7xfwnruzegxaqaewnvgt8t1s09evn	2	2020-07-03 07:31:41.703386	2020-07-03 06:45:52.100682	2020-07-03 07:31:41.705297	{ }	zOjoBUvqjmDA	SDuAuqLvZtBp	\N	f
+24	24	Home Room	yen-ilo-n9b	4k2mnkrfvy0o1zmtupwpjdts8qartucz5aocf4zc	3	2020-07-03 07:36:40.140708	2020-07-03 07:07:11.619484	2020-07-03 07:36:40.143374	{ }	liNoTvlHSWeT	FkqFPVyurnnS	\N	f
+26	27	Home Room	nur-2m1-soo	dh7p2ebecfol4gisropzngpalxq34h9lfrkmcbjs	1	2020-07-03 09:00:08.129997	2020-07-03 08:59:38.889129	2020-07-03 09:00:08.132005	{ }	MdpKWoKQdUCf	AaDClWFacszm	\N	f
+28	32	Home Room	sus-fxh-umo	qe8qiqhrrb2vedpgjgalhjpzgnxob5efu0kcyyto	1	2020-07-06 12:42:51.564221	2020-07-06 12:37:42.051861	2020-07-06 12:42:51.566906	{ }	DzJxuyefoiQR	OaITbcBDpOIi	\N	f
+27	31	Home Room	ida-ubn-g0x	ijpqeewzegy77psnrjbc4xurkutcgrf27xp6qcb7	3	2020-07-06 13:35:20.883378	2020-07-06 06:07:01.684755	2020-07-06 13:35:20.886078	{ }	PPilxDBhLejA	taYAwtmVGkkH	\N	f
+29	31	kelas akbar 	ida-6ev-gzr	ecfkmxmh2c2idzwv7pukg9ztepsuqgjbpfpwprx0	3	2020-07-06 13:58:16.830761	2020-07-06 13:18:28.324951	2020-07-06 13:58:16.832751	{"muteOnStart":true,"requireModeratorApproval":false,"anyoneCanStart":false,"joinModerator":false}	sAGLoNfqgIfl	WRmFthWeBJCp		f
+30	33	Home Room	dwi-8dv-2zy	axcevj7omzegckoarfh1ob2fzvaprucpityhqmko	1	2020-07-08 00:53:17.903329	2020-07-08 00:51:47.140458	2020-07-08 00:53:17.9055	{ }	gnDUkIOlQZlq	PTznpBloqhZq	\N	f
+2	2	Home Room	adm-fwc-4gx	7frjbzwztmi6haln1vlmkuqxw6luyzgcxjcqviyo	5	2020-07-08 03:57:42.370414	2020-06-04 15:23:13.972159	2020-07-08 03:57:42.373468	{"muteOnStart":true,"requireModeratorApproval":false,"anyoneCanStart":false,"joinModerator":false}	kKygTQpUhyVt	XZgsWxFExjtW		f
+\.
+
+
+--
+-- Name: rooms_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.rooms_id_seq', 30, true);
+
+
+--
+-- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.schema_migrations (version) FROM stdin;
+20200413150518
+20180920193451
+20190326144939
+20190206210049
+20181113174230
+20191023172511
+20200130144841
+20190314152108
+20190726153012
+20180504131705
+20190522194037
+20190122210632
+20190312003555
+20181217142710
+20190522194445
+20180504131648
+20190822134205
+20190711192033
+20190522193828
+20190522195242
+20190507190710
+20190828153347
+20191128212935
+\.
+
+
+--
+-- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.settings (id, provider, created_at, updated_at) FROM stdin;
+1	greenlight	2020-06-04 09:38:35.102622	2020-06-04 09:38:35.102622
+\.
+
+
+--
+-- Name: settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.settings_id_seq', 1, true);
+
+
+--
+-- Data for Name: shared_accesses; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.shared_accesses (id, room_id, user_id, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: shared_accesses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.shared_accesses_id_seq', 1, false);
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (id, room_id, provider, uid, name, username, email, social_uid, image, password_digest, accepted_terms, created_at, updated_at, email_verified, language, reset_digest, reset_sent_at, activation_digest, activated_at, deleted, role_id) FROM stdin;
+26	25	greenlight	gl-nglmcrabhlrz	asriortega	\N	asriortega@gmail.com	\N	\N	$2a$12$NAHMLMlr7gHtQ54O2BvbdevsIozTBC27e84NqR9H.brchQJ.9YE2y	f	2020-07-03 07:21:02.095622	2020-07-03 07:21:29.454747	t	default	\N	\N	\N	2020-07-03 07:21:29.428476	f	1
+30	\N	greenlight	gl-zunewnshoepy	HARSONO	\N	harsonociptosuharto@gmail.com	\N	\N	$2a$12$iuxJ0NfKjk7HiNQbC3THqOhT7wqWonRwCfMaYc/uzDtOMoQjCymGC	f	2020-07-05 12:47:55.374164	2020-07-05 12:47:55.404	f	default	\N	\N	c18018889b4abca61e277bb6ad1444c8151b902985562bcaeeab08966df2e89d	\N	f	\N
+12	\N	greenlight	gl-xbjtjddhfqqz	Marlina	\N	linasmatnp3@gmail.com	\N	\N	$2a$12$zrds/YoTzHqB0JuqNywvKu.pZKjbSoOMbYYNtOG0mNfnB2ZI0twQm	f	2020-07-03 06:35:46.701464	2020-07-03 07:30:51.801036	f	default	\N	\N	b7f302ee677a02c59eda9fc2a44e0990a0f884846b2de2ff7cb13952e7eb0e79	\N	f	\N
+27	26	greenlight	gl-zapwgvaisjop	Nurul Hadiyani	\N	pairul13@gmail.com	\N	\N	$2a$12$.fc9kSFSYVLhTD7.gq/3kuFrPREXZNXoSRlr.D4w/b.ytdFzqvGNC	f	2020-07-03 08:58:48.721611	2020-07-03 08:59:38.912615	t	default	\N	\N	\N	2020-07-03 08:59:38.909804	f	1
+29	\N	greenlight	gl-igqohffwppzs	Eddy Kusnadi	\N	eddykusnadi@gmail.com	\N	\N	$2a$12$bINyQCBbFPYlWqDe8.Eg7uKtNPNPqpgbHKA4YcLXChrL2VD/hclWS	f	2020-07-03 22:38:10.154835	2020-07-03 22:38:10.181825	f	default	\N	\N	2eea695604bf38804e81bbfad18104e7fe13bd04e4350a703e886f7bd542b941	\N	f	\N
+28	\N	greenlight	gl-xcccibbrcpzj	rodita	\N	roditaanggraini03@gmail.com	\N	\N	$2a$12$XTg2yNdbU4q31snHnHy./.o.CJ3At8Khqj2kJf6wU0u.GdEkg5VEy	f	2020-07-03 11:47:58.19751	2020-07-03 12:00:07.006589	f	default	\N	\N	25fa7e9cfef18781d37728fc8958ca2142316b3d2c29af3833f41864b0e9be2d	\N	f	\N
+9	9	greenlight	gl-cfwjcmqejkpf	Aris Wahyudi	\N	wahyudiaries91@gmail.com	\N	\N	$2a$12$3p8.HhQ1TStZa2Ckgu8Xvuqqg3l9/ar.byfYto.MFog3TwQpYyLxO	f	2020-07-03 06:30:35.981623	2020-07-03 06:31:11.434669	t	default	\N	\N	\N	2020-07-03 06:31:11.43179	f	1
+2	2	greenlight	gl-dhaqehpnlhlc	Infolahta	\N	admin@tarunanusantara.sch.id	\N		$2a$12$ON4BpBs3Il96u3yp5VKvQuGfGy82n5ybtPeC0jHZJUxBxzKmpTvvW	t	2020-06-04 15:23:13.818631	2020-06-11 05:56:42.948418	t	default	25cef97e603d5e589935a2ad6cd5f165a706c8b243be495f3e5bb9474eee17eb	2020-06-11 05:56:42.939981	\N	\N	f	2
+31	27	greenlight	gl-gwcvucrsvmca	ida ayu nyoman dewi santini	\N	idanyomansantini@yahoo.com	\N	\N	$2a$12$sKjl86mlOzRhKrr/szmamupZKCni4P5vRm3uh3UvnpCYcgOlpTYAO	f	2020-07-06 06:05:33.922589	2020-07-06 06:07:01.707991	t	default	\N	\N	\N	2020-07-06 06:07:01.705128	f	1
+25	\N	greenlight	gl-ntxzhiwbmxbm	Susila Utami	\N	usi_sustami@yahoo.co.id	\N	\N	$2a$12$nds1rBfWo/i3iXNhU/VvaeIAp7Ap0UcuV7M2fMIQvLUargE4TTIpW	f	2020-07-03 07:18:12.45825	2020-07-06 12:07:24.61243	f	default	8f59a1835fc2970ec8d5626df9be7a4c49092194af00ee80ab9a6c8bcc86527d	2020-07-06 12:07:24.603931	ab697d7330711f1c4b2f1a3d5326a83b6aaf9242efaa1c16226148cedadb75b1	\N	f	\N
+5	6	greenlight	gl-ccxrqehzqvbg	Kuncoro	\N	kuncoro@tarunanusantara.sch.id	\N	\N	$2a$12$VTVfrddO9MY8h31qxHNr2uaTpqqxYgJYXpKmsV9TREkeEc7YBEVzS	f	2020-06-17 03:11:53.595273	2020-06-19 06:25:07.835303	f	default	\N	\N	fc7eeae7844f1bb0578cfeb40cc43768add18816e49c21a7caa09d850ac87de2	\N	f	1
+32	28	greenlight	gl-spepndldxedn	Susila Utami	\N	susilau@tarunanusantara.sch.id	\N	\N	$2a$12$J1yOcN9vdFep73ag98ZWjuvdXxDSKqbfiYQys8Gte87idJ6WJCmgW	f	2020-07-06 12:29:04.30561	2020-07-06 12:37:42.081493	t	default	\N	\N	\N	2020-07-06 12:37:42.078564	f	1
+13	\N	greenlight	gl-magatrklcrme	Cecep Iskandar	\N	cecep@tarunanusantara.sch.id	\N	\N	$2a$12$6k49ujN4ASNrtU8uTq5ExOpKtKpBbWlQjXT.h7xwuTp6SWfnnX93O	f	2020-07-03 06:37:07.028081	2020-07-03 06:37:07.041131	f	default	\N	\N	42a264766fa7883705cbde314840c18168648c3bf3f35d07d1a1c9feb1a00c63	\N	f	\N
+15	\N	greenlight	gl-rapxxmznspmx	Pebri Dwi Lesmono Nugroho 	\N	pebri.nugroho@yahoo.co.id	\N	\N	$2a$12$UDmBI8NZM3Bay..zRX.fSur12UFseR/AyfFXO9qiHH.iUzcjWr2Ta	f	2020-07-03 06:40:13.574112	2020-07-03 06:40:59.508824	f	default	\N	\N	088ae410ca8a280a893f6e520f9e7d1cb57308facc75dc1470d25765359499a8	\N	f	\N
+6	8	greenlight	gl-lfghkavaibpz	ito	\N	itodwiadha90@tarunanusantara.sch.id	\N	\N	$2a$12$aTjbAxGw/1J.zw0bOPvrFeknD2dpF9yV8v3UdgW2taHbnFsBQLwHS	f	2020-06-22 03:03:44.890249	2020-06-22 04:39:24.636943	t	default	\N	\N	\N	2020-06-22 04:39:24.63431	f	1
+33	30	greenlight	gl-hmehvczpmnyu	Dwi Widiyanti	\N	dwiwidiyantip18@gmail.com	\N	\N	$2a$12$OgELR00XBUpR2CEX/ZULrO95zB/WJaVQZUNkodr2fqDA4ELZt980e	f	2020-07-08 00:49:39.154319	2020-07-08 00:51:47.164023	t	default	\N	\N	\N	2020-07-08 00:51:47.160962	f	1
+19	19	greenlight	gl-zfgwaxfuxhfk	Stephanus Legiyo	\N	stephanuslegiyo@gmail.com	\N	\N	$2a$12$vFwvQgG3X49qgOJ/MInkBOXofh7/DwlBy2xdZNK9.HAKgUaENsnTm	f	2020-07-03 06:46:52.711748	2020-07-03 06:50:15.771475	t	default	\N	\N	\N	2020-07-03 06:50:15.76861	f	1
+34	\N	greenlight	gl-gstavhdpjmkn	Susila Utami	\N	susilautami@gmail.com	\N	\N	$2a$12$DUoVtOPL3mGPn7kmLba4pOLS91gbqKpwjRL6.OjMUqunmO2azujgy	f	2020-07-08 01:26:13.0972	2020-07-08 01:26:13.126292	f	default	\N	\N	2cec1604e3945de6edd29e0e74e5926d4e355c00c830271da59bea15320a80c0	\N	f	\N
+8	10	greenlight	gl-bjrbhwcicgid	Ana Murwati 	\N	anamurbio5@gmail.com	\N	\N	$2a$12$AyT9El6eY8y16e2VStOE4O0McxxQIbzc73uQAcwUPM/0EBBPjDBPO	f	2020-07-03 06:28:41.952341	2020-07-03 06:33:17.58963	t	default	\N	\N	\N	2020-07-03 06:33:17.586689	f	1
+14	11	greenlight	gl-mrzawgpbfjqs	Muhammad Mishbakhul Huda	\N	mizbach.cool@gmail.com	\N	\N	$2a$12$YkdI2w/NHA0EY8gjq4AeXuNH6Xc68H/hMRR7bZQA21EoY02N15dBO	f	2020-07-03 06:39:36.492633	2020-07-03 06:39:56.889058	t	default	\N	\N	\N	2020-07-03 06:39:56.886023	f	1
+16	14	greenlight	gl-kqssoejjrgkn	Yetty indra	\N	indra.yetty@gmail.com	\N	\N	$2a$12$ygKM0XnOymVqr5i4csM43uu8Z9xx05pNL68tag4KCtGkBBqgAahAu	f	2020-07-03 06:41:54.031834	2020-07-03 06:45:52.12131	t	default	\N	\N	\N	2020-07-03 06:45:52.118464	f	1
+11	16	greenlight	gl-ssldmhbnqxey	endah septiani utari	\N	endahseptianiutari@gmail.com	\N		$2a$12$IDh50Xdu11GoBHLxEqBAW.vhJiZUJ3U2uPUAHQ80DUOmDarhOR.5u	f	2020-07-03 06:31:59.514528	2020-07-03 06:51:18.084519	t	default	\N	\N	\N	2020-07-03 06:48:26.529352	f	1
+10	12	greenlight	gl-cbemfkeehzov	Levanda Aria Ardana	\N	levanda_banter@yahoo.co.id	\N	\N	$2a$12$ErVNSLVPIvr3rF09Fpg0T.Tg4tGdGKZUqM9pvzJGDABXo1KhR8zni	f	2020-07-03 06:31:06.431329	2020-07-03 06:40:46.485276	t	default	\N	\N	\N	2020-07-03 06:40:46.48209	f	1
+17	\N	greenlight	gl-txlcjeoywfdh	Prasetyo Heru	\N	pheru9707@gmail.com	\N	\N	$2a$12$4nCTo6MAamoBK0jvKsEjS.qf2LNNPZ2c0EYQ.CpCSX8KaDsAqTIJi	f	2020-07-03 06:42:03.751165	2020-07-03 06:42:41.566827	f	default	\N	\N	ec77bec19c27e327bfb2a1e598e878961c0c5cbe91f55445952a212a65b84ae1	\N	f	\N
+24	24	greenlight	gl-lrclkpjwacet	Yenni	\N	yenni.tea73@gmail.com	\N	\N	$2a$12$fkG2hmUaV1cZwKgvAyX8ZeturCJskNj2tM7M7GX5EubN58eSRl0RK	f	2020-07-03 07:05:13.882045	2020-07-03 07:07:11.646097	t	default	\N	\N	\N	2020-07-03 07:07:11.642807	f	1
+18	15	greenlight	gl-tqbodryamzvg	M. Ghufroni	\N	ghufronipiss@gmail.com	\N	\N	$2a$12$Qi.zwXm7qwKv2FJiquZLheT9zJOANdpj2s85SkRg4JCg.OJbE1i/e	f	2020-07-03 06:44:58.405484	2020-07-03 06:46:08.714843	t	default	\N	\N	\N	2020-07-03 06:46:08.71213	f	1
+20	17	greenlight	gl-aqmwrqbibqza	Yuliana Retnaningsih	\N	yulianaretna94@gmail.com	\N	\N	$2a$12$8F5RG5nGHT/tuAvXKW.u1uNC23ovRMSImAIwtQPsMAvc75yxfUyAi	f	2020-07-03 06:48:43.85722	2020-07-03 06:49:31.30339	t	default	\N	\N	\N	2020-07-03 06:49:31.300558	f	1
+22	\N	greenlight	gl-mvnmkubmncgi	Wiwik Haryanti	\N	wiwik.haryanti789@gmail.com	\N	\N	$2a$12$AQfYjBXnByRO8lGiFOP.2etXjpZi/t1sbs0dCBtOuCJWX23VmwwBG	f	2020-07-03 06:54:11.949357	2020-07-03 06:54:11.96371	f	default	\N	\N	ba7bd1150948760e68b845514bc2f500ad3a63428f821b2702061d354008d8e9	\N	f	\N
+21	22	greenlight	gl-dubfgrlyqjaa	Oktian  P W	\N	oktian14.pw@gmail.com	\N	\N	$2a$12$Eqjkp.AyJg63vfDYLFoJ7efHDJemQRCDQoRg.1L/JYY0w/5ML8dl6	f	2020-07-03 06:53:58.095456	2020-07-03 06:54:48.057797	t	default	\N	\N	\N	2020-07-03 06:54:48.054916	f	1
+23	\N	greenlight	gl-wtafbzxtlqft	asriortega	\N	zacky_ortega@yahoo.co.id	\N	\N	$2a$12$z2nNtOKxBv6ry2LWjmCDS.uS3KJKuT3GW5u5ek2PcM9dJPc8p7OEa	f	2020-07-03 07:03:32.342372	2020-07-03 07:16:07.796529	f	default	\N	\N	f48996b21e81d5d0230b20eb9e2cfd62cadffbd40ad858384f4bcf310102392b	\N	f	\N
+\.
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 34, true);
+
+
+--
+-- Data for Name: users_roles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users_roles (user_id, role_id) FROM stdin;
+\.
+
+
+--
+-- Name: ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ar_internal_metadata
+    ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: features_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.features
+    ADD CONSTRAINT features_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: invitations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.invitations
+    ADD CONSTRAINT invitations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: role_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.role_permissions
+    ADD CONSTRAINT role_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: roles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.roles
+    ADD CONSTRAINT roles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: rooms_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rooms
+    ADD CONSTRAINT rooms_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: settings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.settings
+    ADD CONSTRAINT settings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: shared_accesses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.shared_accesses
+    ADD CONSTRAINT shared_accesses_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: index_features_on_name; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_features_on_name ON public.features USING btree (name);
+
+
+--
+-- Name: index_features_on_setting_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_features_on_setting_id ON public.features USING btree (setting_id);
+
+
+--
+-- Name: index_invitations_on_invite_token; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_invitations_on_invite_token ON public.invitations USING btree (invite_token);
+
+
+--
+-- Name: index_invitations_on_provider; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_invitations_on_provider ON public.invitations USING btree (provider);
+
+
+--
+-- Name: index_role_permissions_on_role_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_role_permissions_on_role_id ON public.role_permissions USING btree (role_id);
+
+
+--
+-- Name: index_roles_on_name; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_roles_on_name ON public.roles USING btree (name);
+
+
+--
+-- Name: index_roles_on_name_and_provider; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX index_roles_on_name_and_provider ON public.roles USING btree (name, provider);
+
+
+--
+-- Name: index_roles_on_priority_and_provider; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX index_roles_on_priority_and_provider ON public.roles USING btree (priority, provider);
+
+
+--
+-- Name: index_rooms_on_bbb_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_rooms_on_bbb_id ON public.rooms USING btree (bbb_id);
+
+
+--
+-- Name: index_rooms_on_deleted; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_rooms_on_deleted ON public.rooms USING btree (deleted);
+
+
+--
+-- Name: index_rooms_on_last_session; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_rooms_on_last_session ON public.rooms USING btree (last_session);
+
+
+--
+-- Name: index_rooms_on_name; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_rooms_on_name ON public.rooms USING btree (name);
+
+
+--
+-- Name: index_rooms_on_sessions; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_rooms_on_sessions ON public.rooms USING btree (sessions);
+
+
+--
+-- Name: index_rooms_on_uid; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_rooms_on_uid ON public.rooms USING btree (uid);
+
+
+--
+-- Name: index_rooms_on_user_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_rooms_on_user_id ON public.rooms USING btree (user_id);
+
+
+--
+-- Name: index_settings_on_provider; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_settings_on_provider ON public.settings USING btree (provider);
+
+
+--
+-- Name: index_shared_accesses_on_room_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_shared_accesses_on_room_id ON public.shared_accesses USING btree (room_id);
+
+
+--
+-- Name: index_shared_accesses_on_user_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_shared_accesses_on_user_id ON public.shared_accesses USING btree (user_id);
+
+
+--
+-- Name: index_users_on_created_at; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_users_on_created_at ON public.users USING btree (created_at);
+
+
+--
+-- Name: index_users_on_deleted; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_users_on_deleted ON public.users USING btree (deleted);
+
+
+--
+-- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_users_on_email ON public.users USING btree (email);
+
+
+--
+-- Name: index_users_on_password_digest; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX index_users_on_password_digest ON public.users USING btree (password_digest);
+
+
+--
+-- Name: index_users_on_provider; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_users_on_provider ON public.users USING btree (provider);
+
+
+--
+-- Name: index_users_on_role_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_users_on_role_id ON public.users USING btree (role_id);
+
+
+--
+-- Name: index_users_on_room_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_users_on_room_id ON public.users USING btree (room_id);
+
+
+--
+-- Name: index_users_roles_on_role_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_users_roles_on_role_id ON public.users_roles USING btree (role_id);
+
+
+--
+-- Name: index_users_roles_on_user_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_users_roles_on_user_id ON public.users_roles USING btree (user_id);
+
+
+--
+-- Name: index_users_roles_on_user_id_and_role_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX index_users_roles_on_user_id_and_role_id ON public.users_roles USING btree (user_id, role_id);
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
